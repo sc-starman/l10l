@@ -1,0 +1,552 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Lucky10 Gaming Design System - Neon Gaming Theme */
+/* Multi-language Typography System */
+
+/* ========================================
+   LANGUAGE-SPECIFIC FONT VARIABLES
+   ======================================== */
+
+:root {
+  /* English (LTR) - Default */
+  --font-heading: 'Orbitron', 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-ui: 'Inter', sans-serif;
+  --font-display: 'Orbitron', sans-serif;
+  --font-numbers: 'Orbitron', 'Inter', sans-serif;
+  
+  /* Typography scale */
+  --text-h1: clamp(2.5rem, 5vw, 4rem);
+  --text-h2: clamp(2rem, 4vw, 3rem);
+  --text-h3: clamp(1.5rem, 3vw, 2rem);
+  --text-body: clamp(1rem, 1.2vw, 1.125rem);
+  --text-small: clamp(0.875rem, 1vw, 1rem);
+  
+  /* Line heights */
+  --line-height-heading: 1.2;
+  --line-height-body: 1.6;
+  --line-height-rtl: 1.8;
+}
+
+/* Turkish (LTR) */
+[data-lang="tr"] {
+  --font-heading: 'Poppins', 'Montserrat', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-ui: 'Inter', sans-serif;
+  --font-display: 'Montserrat', sans-serif;
+  --font-numbers: 'Poppins', 'Inter', sans-serif;
+}
+
+/* Farsi (RTL) */
+[data-lang="fa"] {
+  --font-heading: 'Vazirmatn', sans-serif;
+  --font-body: 'Vazirmatn', sans-serif;
+  --font-ui: 'Vazirmatn', sans-serif;
+  --font-display: 'Vazirmatn', sans-serif;
+  --font-numbers: 'Orbitron', 'Vazirmatn', sans-serif;
+  --line-height-body: 1.9;
+  --line-height-heading: 1.4;
+}
+
+/* Kurdish - Sorani (RTL) */
+[data-lang="ku"] {
+  --font-heading: 'Noto Sans Arabic', sans-serif;
+  --font-body: 'Noto Sans Arabic', sans-serif;
+  --font-ui: 'Noto Sans Arabic', sans-serif;
+  --font-display: 'Noto Sans Arabic', sans-serif;
+  --font-numbers: 'Orbitron', 'Noto Sans Arabic', sans-serif;
+  --line-height-body: 1.9;
+  --line-height-heading: 1.4;
+}
+
+/* Arabic (RTL) */
+[data-lang="ar"] {
+  --font-heading: 'Cairo', sans-serif;
+  --font-body: 'Tajawal', sans-serif;
+  --font-ui: 'Tajawal', sans-serif;
+  --font-display: 'Cairo', sans-serif;
+  --font-numbers: 'Orbitron', 'Cairo', sans-serif;
+  --line-height-body: 1.9;
+  --line-height-heading: 1.4;
+  letter-spacing: 0.02em;
+}
+
+@layer base {
+  :root {
+    --background: 240 20% 4%;
+    --foreground: 210 40% 98%;
+
+    --card: 240 15% 8%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 240 15% 8%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 270 100% 65%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 100% 60%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 240 10% 15%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 180 100% 50%;
+    --accent-foreground: 240 20% 4%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 240 15% 20%;
+    --input: 240 15% 15%;
+    --ring: 270 100% 65%;
+
+    --radius: 0.75rem;
+
+    /* Gaming-specific colors */
+    --neon-purple: 270 100% 65%;
+    --neon-blue: 220 100% 60%;
+    --neon-cyan: 180 100% 50%;
+    --neon-pink: 320 100% 60%;
+    --neon-gold: 45 100% 55%;
+    --neon-green: 150 100% 45%;
+
+    /* Glow effects */
+    --glow-purple: 270 100% 65%;
+    --glow-blue: 220 100% 60%;
+    --glow-cyan: 180 100% 50%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(270 100% 65%), hsl(220 100% 60%));
+    --gradient-accent: linear-gradient(135deg, hsl(180 100% 50%), hsl(220 100% 60%));
+    --gradient-gold: linear-gradient(135deg, hsl(45 100% 55%), hsl(30 100% 50%));
+    --gradient-card: linear-gradient(180deg, hsl(240 15% 12%), hsl(240 15% 6%));
+
+    --sidebar-background: 240 15% 8%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 270 100% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 10% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 240 15% 20%;
+    --sidebar-ring: 270 100% 65%;
+  }
+
+  .light {
+    color-scheme: light;
+
+    --background: 0 0% 100%;
+    --foreground: 240 10% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+
+    --primary: 270 80% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 80% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 220 12% 38%;
+
+    --accent: 180 70% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 88%;
+    --input: 220 15% 94%;
+    --ring: 270 80% 55%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 10% 10%;
+    --sidebar-primary: 270 80% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 240 10% 10%;
+    --sidebar-border: 220 15% 88%;
+    --sidebar-ring: 270 80% 55%;
+
+    /* Light mode gaming colors - vibrant but readable on white */
+    --neon-purple: 270 80% 48%;
+    --neon-blue: 220 80% 48%;
+    --neon-cyan: 180 70% 38%;
+    --neon-pink: 320 80% 48%;
+    --neon-gold: 45 90% 48%;
+    --neon-green: 150 70% 36%;
+
+    /* Gradients for light mode */
+    --gradient-primary: linear-gradient(135deg, hsl(270 80% 55%), hsl(220 80% 55%));
+    --gradient-accent: linear-gradient(135deg, hsl(180 70% 45%), hsl(220 80% 55%));
+    --gradient-gold: linear-gradient(135deg, hsl(45 90% 50%), hsl(30 90% 50%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 40% 98%));
+  }
+
+  .dark {
+    --background: 240 20% 4%;
+    --foreground: 210 40% 98%;
+
+    --card: 240 15% 8%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 240 15% 8%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 270 100% 65%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 100% 60%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 240 10% 15%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 180 100% 50%;
+    --accent-foreground: 240 20% 4%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 240 15% 20%;
+    --input: 240 15% 15%;
+    --ring: 270 100% 65%;
+    
+    --sidebar-background: 240 15% 8%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 270 100% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 10% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 240 15% 20%;
+    --sidebar-ring: 270 100% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body), 'Inter', sans-serif;
+    line-height: var(--line-height-body);
+  }
+
+  /* Headings use display/heading font */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading), 'Orbitron', sans-serif;
+    line-height: var(--line-height-heading);
+    font-weight: 700;
+  }
+
+  h1 {
+    font-size: var(--text-h1);
+    font-weight: 800;
+  }
+
+  h2 {
+    font-size: var(--text-h2);
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: var(--text-h3);
+    font-weight: 600;
+  }
+
+  /* Paragraph text */
+  p {
+    font-family: var(--font-body), 'Inter', sans-serif;
+    line-height: var(--line-height-body);
+  }
+
+  /* Button and UI elements */
+  button, .btn, input, select, textarea {
+    font-family: var(--font-ui), 'Inter', sans-serif;
+  }
+
+  /* Numbers and stats - always use gaming font */
+  .font-numbers, .stat-number, [data-numbers] {
+    font-family: var(--font-numbers), 'Orbitron', sans-serif;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+  }
+
+  /* RTL specific adjustments */
+  [dir="rtl"] {
+    text-align: right;
+  }
+
+  [dir="rtl"] h1,
+  [dir="rtl"] h2,
+  [dir="rtl"] h3,
+  [dir="rtl"] p {
+    line-height: var(--line-height-rtl);
+  }
+
+  /* Mobile optimization for RTL */
+  @media (max-width: 768px) {
+    [dir="rtl"] h1 {
+      font-size: clamp(2rem, 8vw, 3rem);
+      line-height: 1.5;
+    }
+    
+    [dir="rtl"] h2 {
+      font-size: clamp(1.5rem, 6vw, 2.5rem);
+      line-height: 1.4;
+    }
+    
+    [dir="rtl"] p {
+      line-height: 2;
+    }
+  }
+}
+
+@layer components {
+  .neon-glow {
+    box-shadow: 
+      0 0 20px hsl(var(--neon-purple) / 0.4),
+      0 0 40px hsl(var(--neon-purple) / 0.2),
+      0 0 60px hsl(var(--neon-purple) / 0.1);
+  }
+
+  .neon-glow-blue {
+    box-shadow: 
+      0 0 20px hsl(var(--neon-blue) / 0.4),
+      0 0 40px hsl(var(--neon-blue) / 0.2),
+      0 0 60px hsl(var(--neon-blue) / 0.1);
+  }
+
+  .neon-glow-cyan {
+    box-shadow: 
+      0 0 20px hsl(var(--neon-cyan) / 0.4),
+      0 0 40px hsl(var(--neon-cyan) / 0.2),
+      0 0 60px hsl(var(--neon-cyan) / 0.1);
+  }
+
+  .neon-text {
+    text-shadow: 
+      0 0 10px hsl(var(--neon-purple) / 0.8),
+      0 0 20px hsl(var(--neon-purple) / 0.5),
+      0 0 40px hsl(var(--neon-purple) / 0.3);
+  }
+
+  .neon-text-blue {
+    text-shadow: 
+      0 0 10px hsl(var(--neon-blue) / 0.8),
+      0 0 20px hsl(var(--neon-blue) / 0.5),
+      0 0 40px hsl(var(--neon-blue) / 0.3);
+  }
+
+  .gradient-border {
+    position: relative;
+    background: hsl(var(--card));
+    border-radius: var(--radius);
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: var(--gradient-primary);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .glass-card {
+    background: hsl(var(--card) / 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 
+        0 0 20px hsl(var(--neon-purple) / 0.4),
+        0 0 40px hsl(var(--neon-purple) / 0.2);
+    }
+    50% {
+      box-shadow: 
+        0 0 30px hsl(var(--neon-purple) / 0.6),
+        0 0 60px hsl(var(--neon-purple) / 0.4),
+        0 0 80px hsl(var(--neon-purple) / 0.2);
+    }
+  }
+
+  .float-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  .countdown-pulse {
+    animation: countdown-pulse 1s ease-in-out infinite;
+  }
+
+  @keyframes countdown-pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+  }
+
+  .animate-float {
+    animation: float-updown 4s ease-in-out infinite;
+  }
+
+  @keyframes float-updown {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-10px) rotate(5deg);
+    }
+    75% {
+      transform: translateY(10px) rotate(-5deg);
+    }
+  }
+
+  .animate-text-glow {
+    animation: text-glow 2.6s ease-in-out infinite;
+  }
+
+  @keyframes text-glow {
+    0%, 100% {
+      text-shadow: 
+        0 0 10px hsl(var(--neon-purple) / 0.8),
+        0 0 20px hsl(var(--neon-purple) / 0.5),
+        0 0 40px hsl(var(--neon-purple) / 0.3);
+    }
+    50% {
+      text-shadow: 
+        0 0 20px hsl(var(--neon-purple) / 1),
+        0 0 40px hsl(var(--neon-purple) / 0.8),
+        0 0 60px hsl(var(--neon-purple) / 0.6),
+        0 0 80px hsl(var(--neon-purple) / 0.4);
+    }
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-slow {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.9;
+      transform: scale(1.02);
+    }
+  }
+
+  .animate-glow-pulse {
+    animation: glow-orb 4s ease-in-out infinite;
+  }
+
+  @keyframes glow-orb {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1.1);
+    }
+  }
+
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: hsl(var(--neon-purple));
+    border-radius: 50%;
+    animation: particle-float 8s ease-in-out infinite;
+  }
+
+  @keyframes particle-float {
+    0%, 100% {
+      opacity: 0;
+      transform: translateY(100vh) scale(0);
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-100vh) scale(1);
+    }
+  }
+
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--foreground) / 0.1),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .bg-gradient-card {
+    background: var(--gradient-card);
+  }
+}
