@@ -12,10 +12,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLanguage, languages, Language } from "@/contexts/LanguageContext";
+import { JACKPOT_ENTRY_URL } from "@/lib/links";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [roundStatus, setRoundStatus] = useState<string | null>(null);
   const { language, setLanguage, t } = useLanguage();
   const pathname = usePathname();
   const isHomePage = pathname === "/";
@@ -53,6 +55,25 @@ const Navbar = () => {
     }
 
     setIsDarkMode(root.classList.contains("dark"));
+  }, []);
+
+  useEffect(() => {
+    const loadStatus = async () => {
+      try {
+        const response = await fetch("/api/rounds/public", { cache: "no-store" });
+        if (!response.ok) throw new Error(`Failed to load status: ${response.status}`);
+        const data = await response.json();
+        const status = typeof data?.status === "string" ? data.status : null;
+        setRoundStatus(status);
+      } catch (error) {
+        console.error("Failed to fetch round status:", error);
+        setRoundStatus(null);
+      }
+    };
+
+    loadStatus();
+    const interval = setInterval(loadStatus, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const toggleTheme = () => {
@@ -99,33 +120,52 @@ const Navbar = () => {
           {/* Top Row: Language (left), Logo (center), Theme + CTA (right) */}
           <div className="flex items-center justify-between h-14 md:h-16">
             {/* Language Selector */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
-                >
-                  <Globe className="w-4 h-4" />
-                  <span className="hidden sm:inline">{currentLang.flag} {currentLang.name}</span>
-                  <span className="sm:hidden">{currentLang.flag}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="glass-card border-border/50 animate-scale-in">
-                {languages.map((lang) => (
-                  <DropdownMenuItem
-                    key={lang.code}
-                    onClick={() => handleLanguageChange(lang.code)}
-                    className={`cursor-pointer hover:bg-primary/20 transition-colors ${
-                      language === lang.code ? "bg-primary/10 text-primary" : ""
-                    }`}
+            <div className="relative">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
                   >
-                    <span className="mr-2">{lang.flag}</span>
-                    {lang.name}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                    <Globe className="w-4 h-4" />
+                    <span className="hidden sm:inline">{currentLang.flag} {currentLang.name}</span>
+                    <span className="sm:hidden">{currentLang.flag}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="glass-card border-border/50 animate-scale-in">
+                  {languages.map((lang) => (
+                    <DropdownMenuItem
+                      key={lang.code}
+                      onClick={() => handleLanguageChange(lang.code)}
+                      className={`cursor-pointer hover:bg-primary/20 transition-colors ${
+                        language === lang.code ? "bg-primary/10 text-primary" : ""
+                      }`}
+                    >
+                      <span className="mr-2">{lang.flag}</span>
+                      {lang.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Live Jackpot Status (positioned without changing navbar height) */}
+              <div className="absolute left-0 top-full mt-2 inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-card border border-primary/30 text-xs text-muted-foreground whitespace-nowrap">
+                <span className="w-2 h-2 bg-neon-green rounded-full animate-pulse" />
+                <span>
+                  {roundStatus === "active"
+                    ? t.status.active
+                    : roundStatus === "upcoming"
+                    ? t.status.upcoming
+                    : roundStatus === "ended"
+                    ? t.status.ended
+                    : roundStatus === "paused"
+                    ? t.status.paused
+                    : t.status.active}
+                </span>
+                <Zap className="w-3 h-3 text-neon-gold animate-pulse" />
+              </div>
+            </div>
 
             {/* Centered Logo */}
             <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 group">
@@ -156,8 +196,13 @@ const Navbar = () => {
               </Button>
 
               {/* CTA Button */}
-              <Button className="hidden sm:flex bg-gradient-primary hover:opacity-90 neon-glow transition-all duration-300 font-ui text-sm hover:scale-105 animate-pulse-slow">
-                {t.navbar.enterJackpot}
+              <Button
+                asChild
+                className="hidden sm:flex bg-gradient-primary hover:opacity-90 neon-glow transition-all duration-300 font-ui text-sm hover:scale-105 animate-pulse-slow"
+              >
+                <a href={JACKPOT_ENTRY_URL} target="_blank" rel="noopener noreferrer">
+                  {t.navbar.enterJackpot}
+                </a>
               </Button>
 
               {/* Mobile Menu Button */}
@@ -216,8 +261,10 @@ const Navbar = () => {
                   </button>
                 ))}
               </div>
-              <Button className="bg-gradient-primary hover:opacity-90 neon-glow mt-2 font-ui">
-                {t.navbar.enterJackpot}
+              <Button asChild className="bg-gradient-primary hover:opacity-90 neon-glow mt-2 font-ui">
+                <a href={JACKPOT_ENTRY_URL} target="_blank" rel="noopener noreferrer">
+                  {t.navbar.enterJackpot}
+                </a>
               </Button>
             </div>
           </div>

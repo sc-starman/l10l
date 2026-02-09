@@ -8,33 +8,25 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 
 export default function PrivacyPolicyPage() {
-  const { language, isRTL } = useLanguage();
-
-  const backButtonText = {
-    en: 'Back to Home',
-    fa: 'Ø¨Ø§Ø²Ú¯Ø´Øª Ø¨Ù‡ ØµÙØ­Ù‡ Ø§ØµÙ„ÛŒ',
-    ar: 'Ø§Ù„Ø¹ÙˆØ¯Ø© Ù„Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©',
-    ku: 'Ú¯Û•Ú•Ø§Ù†Û•ÙˆÛ• Ø¨Û† Ù¾Û•Ú•Û•ÛŒ Ø³Û•Ø±Û•Ú©ÛŒ',
-    tr: 'Ana Sayfaya DÃ¶n'
-  };
+  const { isRTL, t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <Navbar />
-      <main className="container mx-auto px-4 py-24">
+      <main className="container mx-auto px-4 pt-32 pb-24">
         {/* Back Button */}
         <div className={`mb-8 ${isRTL ? 'text-right' : 'text-left'}`}>
           <Button asChild variant="ghost" className="gap-2">
             <Link href="/">
               {isRTL ? (
                 <>
-                  <span>{backButtonText[language]}</span>
+                  <span>{t.common.backToHome}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               ) : (
                 <>
                   <ArrowLeft className="w-4 h-4" />
-                  <span>{backButtonText[language]}</span>
+                  <span>{t.common.backToHome}</span>
                 </>
               )}
             </Link>
@@ -241,7 +233,14 @@ export default function PrivacyPolicyPage() {
               <p>
                 If you have questions regarding this Privacy Policy, you may contact us via:
               </p>
-              <p className="text-primary font-semibold">[Telegram / Support Channel / Contact Page]</p>
+              <a
+                className="text-primary font-semibold"
+                href="https://t.me/lucky10_support"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Telegram Support
+              </a>
             </div>
           </section>
         </div>

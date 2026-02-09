@@ -4,13 +4,33 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Sparkles, Zap, Star, Trophy, TrendingUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { JACKPOT_ENTRY_URL } from "@/lib/links";
 
-// Mock function - replace with actual API call
-const fetchJackpotPool = async (): Promise<number> => {
-  // TODO: Replace with actual API endpoint
-  // Example: const response = await fetch('YOUR_API_ENDPOINT');
-  // return response.json();
-  return 847500; // Mock value in USDT
+type PublicRound = {
+  roundNumber: number;
+  prizePool: number;
+  endDate: string;
+  startDate: string;
+  totalTickets: number;
+  status: string;
+};
+
+const fetchPublicRound = async (): Promise<PublicRound> => {
+  const response = await fetch("/api/rounds/public", { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Failed to load public round: ${response.status}`);
+  }
+  return response.json();
+};
+
+const computeTimeLeft = (endDateMs: number) => {
+  const diff = Math.max(0, endDateMs - Date.now());
+  const totalSeconds = Math.floor(diff / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return { days, hours, minutes, seconds };
 };
 
 const HeroSection = () => {
@@ -25,23 +45,28 @@ const HeroSection = () => {
   const [jackpotPool, setJackpotPool] = useState<number>(0);
   const [displayedPool, setDisplayedPool] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [roundEndMs, setRoundEndMs] = useState<number | null>(null);
 
   // Fetch jackpot pool from API
   useEffect(() => {
-    const loadJackpotPool = async () => {
+    const loadRound = async () => {
       try {
-        const pool = await fetchJackpotPool();
-        setJackpotPool(pool);
+        const round = await fetchPublicRound();
+        setJackpotPool(round.prizePool ?? 0);
+        const endMs = Number.isFinite(Date.parse(round.endDate))
+          ? Date.parse(round.endDate)
+          : null;
+        setRoundEndMs(endMs);
         setIsLoading(false);
       } catch (error) {
-        console.error('Failed to fetch jackpot pool:', error);
+        console.error("Failed to fetch public round:", error);
         setIsLoading(false);
       }
     };
     
-    loadJackpotPool();
+    loadRound();
     // Refresh every 30 seconds
-    const interval = setInterval(loadJackpotPool, 30000);
+    const interval = setInterval(loadRound, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -68,41 +93,13 @@ const HeroSection = () => {
   }, [jackpotPool]);
 
   useEffect(() => {
+    if (!roundEndMs) return;
+    setTimeLeft(computeTimeLeft(roundEndMs));
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        let { days, hours, minutes, seconds } = prev;
-        
-        if (seconds > 0) {
-          seconds--;
-        } else {
-          seconds = 59;
-          if (minutes > 0) {
-            minutes--;
-          } else {
-            minutes = 59;
-            if (hours > 0) {
-              hours--;
-            } else {
-              hours = 23;
-              if (days > 0) {
-                days--;
-              } else {
-                // Reset to 10 days when countdown ends
-                days = 10;
-                hours = 0;
-                minutes = 0;
-                seconds = 0;
-              }
-            }
-          }
-        }
-        
-        return { days, hours, minutes, seconds };
-      });
+      setTimeLeft(computeTimeLeft(roundEndMs));
     }, 1000);
-
     return () => clearInterval(timer);
-  }, []);
+  }, [roundEndMs]);
 
   const formatNumber = (num: number) => num.toString().padStart(2, "0");
   
@@ -116,7 +113,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28">
       {/* GIF Background */}
       <div className="absolute inset-0 z-0">
         <div
@@ -179,14 +176,6 @@ const HeroSection = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Badge with Shimmer */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-primary/30 mb-8 animate-fade-in relative overflow-hidden group">
-            <div className="absolute inset-0 shimmer" />
-            <span className="w-2 h-2 bg-neon-green rounded-full animate-pulse" />
-            <span className="text-sm text-muted-foreground relative z-10">{t.hero.liveJackpot}</span>
-            <Sparkles className="w-4 h-4 text-neon-gold animate-pulse" />
-          </div>
-
           {/* Main Headline with Enhanced Effects */}
           <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in leading-heading" style={{ animationDelay: "0.1s" }}>
             <span className="text-foreground inline-block hover:scale-105 transition-transform duration-300">{t.hero.headline1}</span>
@@ -279,30 +268,20 @@ const HeroSection = () => {
 
           {/* Single CTA Button */}
           <div className="flex items-center justify-center animate-fade-in" style={{ animationDelay: "0.4s" }}>
-            <Button 
-              size="lg" 
+            <Button
+              asChild
+              size="lg"
               className="bg-gradient-primary hover:opacity-90 neon-glow px-10 py-7 text-lg font-ui font-semibold transition-all duration-300 hover:scale-110 relative overflow-hidden group"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-              <Zap className="w-5 h-5 mr-2 animate-pulse" />
-              <span className="relative z-10">{t.hero.enterNow}</span>
+              <a href={JACKPOT_ENTRY_URL} target="_blank" rel="noopener noreferrer">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                <Zap className="w-5 h-5 mr-2 animate-pulse" />
+                <span className="relative z-10">{t.hero.enterNow}</span>
+              </a>
             </Button>
           </div>
 
-          {/* Stats with Enhanced Design */}
-          <div className="grid grid-cols-3 gap-4 md:gap-8 mt-16 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.5s" }}>
-            {[
-              { value: "$2.4M+", label: t.hero.totalPrizes, icon: "💰" },
-              { value: "50K+", label: t.hero.players, icon: "🎮" },
-              { value: "1,240", label: t.hero.winners, icon: "🏆" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center group cursor-pointer hover:scale-110 transition-all duration-300">
-                <div className="text-2xl mb-1 group-hover:animate-bounce">{stat.icon}</div>
-                <p className="font-numbers text-2xl md:text-3xl font-bold text-gradient group-hover:neon-text transition-all">{stat.value}</p>
-                <p className="text-sm text-muted-foreground mt-1 font-body">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+          {/* Stats hidden for now */}
         </div>
       </div>
 

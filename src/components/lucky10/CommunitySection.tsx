@@ -2,6 +2,7 @@
 
 import { Users, Twitter, MessageCircle, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SUPPORT_TELEGRAM_URL } from "@/lib/links";
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
@@ -34,6 +35,7 @@ const CommunitySection = () => {
       followers: "89K",
       color: "from-cyan-400 to-blue-500",
       hoverColor: "hover:border-cyan-500/50",
+      href: SUPPORT_TELEGRAM_URL,
     },
   ];
 
@@ -63,9 +65,14 @@ const CommunitySection = () => {
 
               {/* Social Cards */}
               <div className="grid md:grid-cols-3 gap-4 mb-10">
-                {socials.map((social, index) => (
-                  <button
+                {socials.map((social, index) => {
+                  const CardTag = social.href ? "a" : "button";
+                  return (
+                  <CardTag
                     key={social.name}
+                    href={social.href}
+                    target={social.href ? "_blank" : undefined}
+                    rel={social.href ? "noopener noreferrer" : undefined}
                     className={`group p-6 rounded-xl border border-border/30 bg-muted/30 ${social.hoverColor} transition-all duration-500 hover:-translate-y-1 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
                     style={{ transitionDelay: `${0.3 + index * 0.1}s` }}
                   >
@@ -80,8 +87,8 @@ const CommunitySection = () => {
                         <p className="text-sm text-muted-foreground font-body">{social.followers} {t.community.members}</p>
                       </div>
                     </div>
-                  </button>
-                ))}
+                  </CardTag>
+                )})}
               </div>
 
               {/* Stats */}
@@ -100,8 +107,14 @@ const CommunitySection = () => {
 
               {/* CTA */}
               <div className={`text-center mt-10 transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-                <Button size="lg" className="bg-gradient-primary hover:opacity-90 neon-glow px-8 py-6 text-lg font-ui font-semibold">
-                  {t.community.joinCommunity}
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-gradient-primary hover:opacity-90 neon-glow px-8 py-6 text-lg font-ui font-semibold"
+                >
+                  <a href={SUPPORT_TELEGRAM_URL} target="_blank" rel="noopener noreferrer">
+                    {t.community.joinCommunity}
+                  </a>
                 </Button>
               </div>
             </div>

@@ -3,6 +3,7 @@
 import { Zap, Twitter, Send, Github } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { SUPPORT_TELEGRAM_URL } from "@/lib/links";
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -16,17 +17,17 @@ const Footer = () => {
     resources: [
       { name: t.footer.documentation, href: "#" },
       { name: t.footer.faq, href: "/faq" },
-      { name: t.footer.support, href: "#" },
+      { name: t.footer.support, href: SUPPORT_TELEGRAM_URL },
     ],
     legal: [
       { name: t.footer.privacy, href: "/privacy" },
-      { name: t.footer.terms, href: "#" },
+      { name: t.footer.terms, href: "/terms" },
     ],
   };
 
   const socials = [
     { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Send, href: "#", label: "Telegram" },
+    { icon: Send, href: SUPPORT_TELEGRAM_URL, label: "Telegram" },
     { icon: Github, href: "#", label: "GitHub" },
   ];
 
@@ -52,6 +53,8 @@ const Footer = () => {
                 <a
                   key={social.label}
                   href={social.href}
+                  target={social.href.startsWith("http") ? "_blank" : undefined}
+                  rel={social.href.startsWith("http") ? "noopener noreferrer" : undefined}
                   className="w-10 h-10 rounded-lg border border-border/50 bg-card/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/10 transition-all duration-300"
                   aria-label={social.label}
                 >

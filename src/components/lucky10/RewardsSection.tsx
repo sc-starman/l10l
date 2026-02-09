@@ -1,6 +1,7 @@
 "use client";
 
 import { Trophy, Award } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
@@ -8,12 +9,43 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 const RewardsSection = () => {
   const { t } = useLanguage();
   const { ref, isVisible } = useScrollAnimation(0.1);
+  const [currentPool, setCurrentPool] = useState<number | null>(null);
+  const [isLoadingPool, setIsLoadingPool] = useState(true);
+
+  useEffect(() => {
+    const loadPool = async () => {
+      try {
+        const response = await fetch("/api/rounds/public", { cache: "no-store" });
+        if (!response.ok) throw new Error(`Failed to load pool: ${response.status}`);
+        const data = await response.json();
+        setCurrentPool(typeof data?.prizePool === "number" ? data.prizePool : null);
+      } catch (error) {
+        console.error("Failed to fetch current pool:", error);
+        setCurrentPool(null);
+      } finally {
+        setIsLoadingPool(false);
+      }
+    };
+
+    loadPool();
+    const interval = setInterval(loadPool, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatCurrency = (num: number) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(num);
+  };
 
   const rewards = [
     {
       icon: Trophy,
       title: t.rewards.grandJackpot,
-      percentage: "60%",
+      percentage: t.rewards.grandPrizeLabel,
       description: t.rewards.grandDesc,
       color: "neon-gold",
       gradient: "from-amber-500 to-orange-500",
@@ -22,7 +54,7 @@ const RewardsSection = () => {
     {
       icon: Award,
       title: t.rewards.luckyWinner,
-      percentage: "30%",
+      percentage: t.rewards.luckyAirdropLabel,
       description: t.rewards.luckyDesc,
       color: "neon-cyan",
       gradient: "from-cyan-400 to-blue-500",
@@ -52,7 +84,7 @@ const RewardsSection = () => {
         </div>
 
         {/* Reward Cards */}
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-3xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
           {rewards.map((reward, index) => (
             <div
               key={index}
@@ -73,7 +105,11 @@ const RewardsSection = () => {
 
                 {/* Percentage */}
                 <div className="mb-4">
-                  <span className={`font-numbers text-5xl md:text-6xl font-bold bg-gradient-to-r ${reward.gradient} bg-clip-text text-transparent`}>
+                  <span
+                    className={`font-numbers font-bold bg-gradient-to-r ${reward.gradient} bg-clip-text text-transparent ${
+                      reward.percentageClassName ?? "text-5xl md:text-6xl"
+                    }`}
+                  >
                     {reward.percentage}
                   </span>
                 </div>
@@ -100,7 +136,13 @@ const RewardsSection = () => {
           <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full glass-card border border-border/30">
             <span className="w-2 h-2 bg-neon-green rounded-full animate-pulse" />
             <span className="text-sm text-muted-foreground font-body">{t.rewards.currentPool}</span>
-            <span className="font-numbers text-lg font-bold text-gradient">$125,430</span>
+            {isLoadingPool ? (
+              <span className="font-numbers text-lg font-bold text-gradient">—</span>
+            ) : (
+              <span className="font-numbers text-lg font-bold text-gradient">
+                {currentPool !== null ? formatCurrency(currentPool) : "—"}
+              </span>
+            )}
           </div>
         </div>
       </div>

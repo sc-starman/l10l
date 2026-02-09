@@ -4,6 +4,7 @@ import { Ticket, Clock, Trophy, ChevronRight, ChevronLeft } from "lucide-react";
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { JACKPOT_ENTRY_URL } from "@/lib/links";
 
 const HowItWorksSection = () => {
   const { t, isRTL } = useLanguage();
@@ -106,10 +107,15 @@ const HowItWorksSection = () => {
 
         {/* CTA */}
         <div className={`text-center mt-16 transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-primary font-ui font-semibold text-primary-foreground hover:opacity-90 neon-glow transition-all duration-300 hover:scale-105">
+          <a
+            href={JACKPOT_ENTRY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-primary font-ui font-semibold text-primary-foreground hover:opacity-90 neon-glow transition-all duration-300 hover:scale-105"
+          >
             {t.howItWorks.startPlaying}
             <ArrowIcon className="w-5 h-5" />
-          </button>
+          </a>
         </div>
       </div>
     </section>

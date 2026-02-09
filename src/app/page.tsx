@@ -1,8 +1,8 @@
 ﻿import Navbar from "@/components/lucky10/Navbar";
 import HeroSection from "@/components/lucky10/HeroSection";
 import RewardsSection from "@/components/lucky10/RewardsSection";
+import ReferralSection from "@/components/lucky10/ReferralSection";
 import FeaturesSection from "@/components/lucky10/FeaturesSection";
-import WinnersSection from "@/components/lucky10/WinnersSection";
 import HowItWorksSection from "@/components/lucky10/HowItWorksSection";
 import Footer from "@/components/lucky10/Footer";
 
@@ -13,8 +13,9 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <RewardsSection />
+        <ReferralSection />
         <FeaturesSection />
-        <WinnersSection />
+        {/* WinnersSection hidden for now - no winners yet */}
         <HowItWorksSection />
         {/* CommunitySection hidden for now - uncomment when needed */}
         {/* <CommunitySection /> */}
